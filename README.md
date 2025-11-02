@@ -8,9 +8,9 @@
 ![React](https://img.shields.io/badge/React-18+-61DAFB?logo=react)
 ![AWS](https://img.shields.io/badge/AWS-DynamoDB-FF9900?logo=amazon-aws)
 
-### 🚀 Next-Generation Enterprise Security Solution
+### 🚀 Open Source Enterprise-Grade Security Solution
 
-Firewall Enterprise 9.1 is a comprehensive **AI-powered security platform** that combines **Zero-Trust architecture**, **behavioral analytics**, and **real-time threat intelligence** to protect organizations from modern cyber threats.
+Firewall Enterprise 9.1 is a comprehensive **AI-powered security platform** that combines **Zero-Trust architecture**, **behavioral analytics**, and **real-time threat intelligence**. **100% Open Source** under MIT License.
 
 ---
 
@@ -19,8 +19,8 @@ Firewall Enterprise 9.1 is a comprehensive **AI-powered security platform** that
 - [🚀 Quick Start](#-quick-start)
 - [🏗️ Architecture](#️-system-architecture)
 - [🔧 API Reference](#-api-reference)
-- [🛡️ Security Features](#️-security-features)
-- [📚 Documentation](#-documentation)
+- [🛡️ Security](#️-security)
+- [🐳 Docker](#-docker-support)
 - [🤝 Contributing](#-contributing)
 - [📞 Support](#-support)
 
@@ -40,23 +40,28 @@ Firewall Enterprise 9.1 is a comprehensive **AI-powered security platform** that
 ### 📥 Installation
 
 ```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/firewall-enterprise-9-1.git
+# Clone repository (REPLACE with your actual GitHub URL)
+git clone https://github.com/ajites4d/firewall-enterprise-9-1.git
 cd firewall-enterprise-9-1
 
-# Create configuration file
-cp config/firewall-production.yaml.example config/firewall-production.yaml
+# Create configuration from example
+cp config/firewall-config.yaml.example config/firewall-config.yaml
 ```
 
 ⚙️ Environment Setup
 
 ```bash
-# Set required environment variables
-export AWS_ACCESS_KEY_ID="your_access_key_here"
-export AWS_SECRET_ACCESS_KEY="your_secret_key_here"
+# Linux/macOS
+export AWS_ACCESS_KEY_ID="your_access_key"
+export AWS_SECRET_ACCESS_KEY="your_secret_key" 
 export AWS_REGION="us-east-1"
 export JWT_SECRET="your_jwt_secret_here"
 export ENCRYPTION_KEY="your_encryption_key_here"
+
+# Windows (PowerShell)
+$env:AWS_ACCESS_KEY_ID="your_access_key"
+$env:AWS_SECRET_ACCESS_KEY="your_secret_key"
+$env:AWS_REGION="us-east-1"
 ```
 
 🏃‍♂️ Local Development
@@ -69,12 +74,12 @@ cd src
 # Install dependencies
 go mod download
 
-# Run development server
-go run main.go --config ../config/firewall-development.yaml
+# Run with development config
+go run main.go --config ../config/firewall-config.yaml
 
-# Or build binary
+# Or build and run
 go build -o firewall-enterprise main.go
-./firewall-enterprise --config ../config/firewall-development.yaml
+./firewall-enterprise --config ../config/firewall-config.yaml
 ```
 
 Frontend (React)
@@ -85,33 +90,40 @@ cd frontend
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (http://localhost:3000)
 npm run dev
 
 # Build for production
 npm run build
 ```
 
-🐳 Docker Development
+🐳 Docker Development (Recommended)
 
 ```bash
-# Using Docker Compose
-docker-compose -f docker-compose.dev.yml up -d
+# Start all services
+docker-compose up -d
 
 # View logs
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose logs -f backend
+
+# Stop services
+docker-compose down
 ```
 
 ✅ Verification
 
 ```bash
-# Check health endpoint
+# Health check
 curl http://localhost:8080/health
 
 # Expected response:
-{"status":"healthy","version":"9.1.0","timestamp":"2024-01-15T10:30:00Z"}
+{
+  "status": "healthy", 
+  "version": "9.1.0",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
 
-# Check system status
+# System status
 curl http://localhost:8080/api/v1/system/status
 ```
 
@@ -119,7 +131,7 @@ curl http://localhost:8080/api/v1/system/status
 
 🏗️ System Architecture
 
-Architecture Overview
+High-Level Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -141,21 +153,21 @@ Architecture Overview
 Frontend (React) → Backend API → AI Engines → DynamoDB → Real-time Dashboard
 ```
 
-🧩 Core Components
+🧩 Technology Stack
 
 Component Technology Purpose
-Backend API Go 1.21+, Gin REST API & business logic
-Frontend Dashboard React 18+, TypeScript User interface
-Database AWS DynamoDB Data storage & retrieval
-AI Engine Custom ML models Behavioral analysis
-Threat Intel Multiple sources Real-time threat data
+Backend API Go 1.21+, Gin High-performance API server
+Frontend Dashboard React 18+, TypeScript Modern user interface
+Database AWS DynamoDB Scalable NoSQL storage
+AI/ML Engine Custom algorithms Behavioral analysis & threat detection
+Containerization Docker, Docker Compose Environment consistency
 
 ---
 
-📊 Performance Metrics
+📊 Performance & Scale
 
 Metric Value Target
-Threat Analysis Speed < 50ms < 100ms
+Threat Analysis < 50ms < 100ms
 Behavioral Analysis 1,200/sec 1,000/sec
 Concurrent Users 1,200+ 1,000
 System Uptime 99.98% 99.95%
@@ -178,33 +190,21 @@ Authorization: Bearer {token}
 }
 ```
 
-```http
-POST /api/v1/behavior/analyze  
-Content-Type: application/json
-Authorization: Bearer {token}
+Response:
 
+```json
 {
-  "entity_id": "user_123",
-  "behavior_vector": {
-    "login_pattern": "normal",
-    "access_hours": "9-17"
+  "status": "success",
+  "data": {
+    "target": "8.8.8.8",
+    "threat_score": 15,
+    "risk_level": "low",
+    "categories": ["public_dns"]
   }
 }
 ```
 
-```http
-POST /api/v1/zero-trust/evaluate
-Content-Type: application/json
-Authorization: Bearer {token}
-
-{
-  "entity_id": "user_123",
-  "resource": "database",
-  "action": "read"
-}
-```
-
-Example Usage
+Quick Test
 
 ```bash
 # Get authentication token
@@ -212,26 +212,23 @@ TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"demo","password":"demo123"}' | jq -r '.data.access_token')
 
-# Check threat intelligence
+# Check threat
 curl -X POST http://localhost:8080/api/v1/threat/intel \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"target": "8.8.8.8", "type": "ip_address"}'
-
-# Check system status
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/system/status
 ```
 
-View Full API Documentation
+View Complete API Documentation
 
 ---
 
-🛡️ Security Features
+🛡️ Security
 
 🔐 Authentication & Authorization
 
 · JWT-based token authentication
-· Multi-Factor Authentication (MFA) support
+· Multi-Factor Authentication (MFA) ready
 · Role-Based Access Control (RBAC)
 · Session management with automatic timeout
 
@@ -240,96 +237,42 @@ View Full API Documentation
 · AES-256 for data at rest
 · TLS 1.3 for data in transit
 · AWS KMS for key management
-· Certificate pinning for critical endpoints
 
 📋 Compliance
 
 · GDPR ready - Data protection & privacy
 · HIPAA compliant - Healthcare data security
 · PCI-DSS supported - Payment card security
-· ISO 27001 aligned - Information security management
 
-View Security Documentation
-
----
-
-🏢 Use Cases
-
-🏦 Financial Services
-
-· Insider threat detection - Monitor trading patterns
-· Regulatory compliance - FINRA, SOX, PCI-DSS
-· Fraud prevention - Real-time transaction monitoring
-
-🏥 Healthcare
-
-· HIPAA compliance - Patient data protection
-· Access control - Role-based medical record access
-· Audit trail - Comprehensive activity logging
-
-🎓 Education
-
-· Student data protection - FERPA compliance
-· Research security - Intellectual property protection
-· Network access - Campus-wide security
-
-🏭 Manufacturing
-
-· Industrial control - OT system protection
-· Supply chain - Vendor access management
-· IP protection - Recipe and design security
-
----
-
-📚 Documentation
-
-Document Description
-🏗️ Architecture System design and components
-🔧 API Reference Complete API documentation
-🔒 Security Security features and compliance
-🚀 Deployment Installation and deployment guides
-
----
-
-🤝 Contributing
-
-We welcome contributions from the security community! Please see our contributing guidelines.
-
-🐛 Reporting Issues
-
-· Use GitHub Issues to report bugs
-· Include detailed reproduction steps
-· Provide logs and error messages
-
-💡 Feature Requests
-
-· Suggest new features via GitHub Issues
-· Explain the use case and benefits
-· Consider implementation complexity
-
-🔧 Development
-
-1. Fork the repository
-2. Create a feature branch (git checkout -b feature/amazing-feature)
-3. Commit your changes (git commit -m 'Add amazing feature')
-4. Push to the branch (git push origin feature/amazing-feature)
-5. Open a Pull Request
-
-View Contributing Guidelines
+View Security Policy | Report Security Issue
 
 ---
 
 🐳 Docker Support
 
-Development
+Development Environment
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+# Start all services
+docker-compose up -d
+
+# View specific service logs
+docker-compose logs -f backend
+
+# Run tests
+docker-compose exec backend go test ./...
+
+# Stop services
+docker-compose down
 ```
 
-Production
+Production Deployment
 
 ```bash
+# Build images
+docker-compose -f docker-compose.prod.yml build
+
+# Deploy
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
@@ -343,60 +286,101 @@ services:
     environment:
       - LOG_LEVEL=debug
       - AWS_REGION=eu-west-1
+    ports:
+      - "8080:8080"
 ```
 
 ---
 
-🔄 Deployment
+🤝 Contributing
 
-🐳 Docker Deployment
+We love contributions from the security community!
+
+🎯 How to Contribute
+
+1. Fork the repository
+2. Create a feature branch (git checkout -b feature/amazing-feature)
+3. Commit your changes (git commit -m 'Add amazing feature')
+4. Push to the branch (git push origin feature/amazing-feature)
+5. Open a Pull Request
+
+📋 Contribution Areas
+
+· Threat Intelligence - New data sources and feeds
+· AI/ML Models - Improved detection algorithms
+· Integrations - Third-party service support
+· Documentation - User guides and tutorials
+· Testing - Unit tests and integration tests
+
+🐛 Reporting Issues
+
+· Use GitHub Issues
+· Include detailed reproduction steps
+· Provide logs, error messages, and environment details
+
+View Contributing Guidelines | Code of Conduct
+
+---
+
+📚 Documentation
+
+Document Description
+🏗️ Architecture Guide System design and components
+🔧 API Reference Complete API documentation
+🚀 Deployment Guide Installation and deployment
+🔒 Security Overview Security features and compliance
+
+---
+
+🔄 Deployment Options
+
+🐳 Docker (Recommended)
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+☁️ AWS EC2
 
 ```bash
 # Build and deploy
-docker build -t firewall-enterprise:9.1.0 .
-docker run -p 8080:8080 firewall-enterprise:9.1.0
-```
-
-☁️ AWS Deployment
-
-```bash
-# Using AWS CLI
-aws cloudformation deploy \
-  --template-file deployments/aws/cloudformation.yaml \
-  --stack-name firewall-enterprise \
-  --capabilities CAPABILITY_IAM
-```
-
-🏗️ Manual Deployment
-
-```bash
-# Build binary
 go build -o firewall-enterprise src/main.go
-
-# Run service
-./firewall-enterprise --config config/firewall-production.yaml
+./firewall-enterprise --config config/firewall-config.yaml
 ```
 
-View Deployment Guide
+🏗️ Manual Build
+
+```bash
+# Backend
+cd src && go build -o firewall-enterprise main.go
+
+# Frontend  
+cd frontend && npm run build
+
+# Run
+./firewall-enterprise --config config/firewall-config.yaml
+```
+
+View Detailed Deployment Guide
 
 ---
 
 📞 Support
 
-📧 Contact
+💬 Community Support
 
-· Support Email:dewatube02@gmail.com
+· GitHub Discussions: Questions & Answers
+· GitHub Issues: Bug Reports & Features
 
-🔗 Links
+🔧 Professional Support
+
+Professional support available for enterprise deployments.
+
+📚 Resources
 
 · Documentation: docs.firewall-enterprise.com
-· Website: firewall-enterprise.com
+· Examples: /examples directory
 · Blog: blog.firewall-enterprise.com
-
-🐛 Issue Tracking
-
-· GitHub Issues
-· Feature Requests
 
 ---
 
@@ -404,25 +388,27 @@ View Deployment Guide
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+Summary: This is a true open-source project. You can use, modify, and distribute this software for any purpose, including commercial use.
+
 ---
 
 🙏 Acknowledgments
 
-· AWS for cloud infrastructure support
-· Go Community for excellent development tools
-· Security Researchers for threat intelligence contributions
-· Open Source Community for invaluable resources and libraries
+· AWS for cloud infrastructure and services
+· Go Community for excellent tools and libraries
+· Security Researchers worldwide for threat intelligence
+· Open Source Community for collaboration and innovation
 
 ---
 
 <div align="center">
 
-🚀 Ready to secure your organization?
+🚀 Ready to Enhance Your Security Posture?
 
-https://img.shields.io/badge/Deploy-Now-orange?style=for-the-badge&logo=aws
-https://img.shields.io/badge/View-Demo-green?style=for-the-badge&logo=react
-https://img.shields.io/badge/Get_Support-blue?style=for-the-badge&logo=github
+https://img.shields.io/badge/Deploy-Docker-2496ED?style=for-the-badge&logo=docker
+https://img.shields.io/badge/API_Documentation-View_Here-green?style=for-the-badge
+https://img.shields.io/badge/Report_Issue-GitHub-black?style=for-the-badge&logo=github
 
-Firewall Enterprise 9.1 - Enterprise-Grade Security for Modern Threats
+Firewall Enterprise 9.1 - 100% Open Source Enterprise Security
 
 </div>
