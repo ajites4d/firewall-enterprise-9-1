@@ -186,7 +186,7 @@ View Security Documentation
 
 📞 Contact & Support
 
-Email: support@firewall-enterprise.com
+Email:dewatube02@gmail.com
 Documentation: docs.firewall-enterprise.com
 Issues: GitHub Issues
 
