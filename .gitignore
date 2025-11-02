@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+vendor/
+*/node_modules/
+
+# Build outputs
+dist/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+firewall-enterprise
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# AWS credentials
+.aws/
+*.pem
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Configuration overrides
+config/firewall-config.yaml
+config/*.local.yaml
+
+# Database files
+*.db
+*.sqlite
