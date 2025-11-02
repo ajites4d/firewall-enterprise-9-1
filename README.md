@@ -40,12 +40,10 @@ Firewall Enterprise 9.1 is a comprehensive **AI-powered security platform** that
 ### 📥 Installation
 
 ```bash
-# Clone repository (REPLACE with your actual GitHub URL)
+# Clone repository 
 git clone https://github.com/ajites4d/firewall-enterprise-9-1.git
 cd firewall-enterprise-9-1
 
-# Create configuration from example
-cp config/firewall-config.yaml.example config/firewall-config.yaml
 ```
 
 ⚙️ Environment Setup
